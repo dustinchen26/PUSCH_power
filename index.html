@@ -14,10 +14,11 @@
 <body>
     <h1>PUSCH Transmit Power Calculator</h1>
 	<p style="margin: 0;">Author: Dustin_Chen, email: <a href="mailto:Dustin_Chen@compal.com" style="line-height: 1;">Dustin_Chen@compal.com</a> or <a href="mailto:chuhpsdustin@gmail.com" style="line-height: 1;">chuhpsdustin@gmail.com</a></p>	
-	<p>Ref: ETSI TS 138 213 chap 7  Uplink Power control</p>
+	<p>Ref: ETSI TS 138 213 chap 7  Uplink Power control sec 7.1  Physical uplink shared channel </p>
     <pre>
       <img src="https://raw.githubusercontent.com/dustinchen26/PUSCH_power/master/formula.png" alt="GitHub Image" width="700">    </pre>
     <form id="pusch-form">
+		<label><b>● Please enter the following parameters, and then press Calculate to get the PUSCH power calculation result</b><br></label>
         <label for="p0-NominalWithGrant">p0-NominalWithGrant:</label>
         <input type="number" step="any" id="p0-NominalWithGrant" required value="-70"><br>
 
