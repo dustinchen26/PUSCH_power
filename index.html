@@ -111,6 +111,7 @@
             const pusch_transmit_power = p0_NominalWithGrant + 10 * (Math.log10(2 ** mu * num_RB)) + p0 + alpha * pathloss + delta_TF + tpc_adjustment;
 
             const calculationDetails = `PUSCH Transmit Power:<br>
+                =  p0-NominalWithGrant+ 10*log(2^mu* Num RB )+ p0+alpha*Pathloss + Delta TF + TPC Adjustment   <br>
                 = ${p0_NominalWithGrant} + 10 * log10(2^${mu} * ${num_RB}) + ${p0} + ${alpha} * ${pathloss} + ${delta_TF} + ${tpc_adjustment}<br>
                 = ${pusch_transmit_power.toFixed(2)}`;
             
