@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PUSCH Transmit Power Calculator</title>
+	
+<style>
+    /* 調整輸入框的寬度 */
+    input[type="number"] {
+        width: 50px;
+    }
+</style>	
+	
+</head>
+<body>
+    <h1>PUSCH Transmit Power Calculator</h1>
+	<p style="margin: 0;">Author: Dustin_Chen, email: <a href="mailto:Dustin_Chen@compal.com" style="line-height: 1;">Dustin_Chen@compal.com</a> or <a href="mailto:chuhpsdustin@gmail.com" style="line-height: 1;">chuhpsdustin@gmail.com</a></p>	
+	<p>Ref: ETSI TS 138 213 chap 7  Uplink Power control</p>
+    <pre>
+      <img src="https://raw.githubusercontent.com/dustinchen26/PUSCH_power/master/formula.png" alt="GitHub Image" width="700">    </pre>
+    <form id="pusch-form">
+        <label for="p0-NominalWithGrant">p0-NominalWithGrant:</label>
+        <input type="number" step="any" id="p0-NominalWithGrant" required value="-70"><br>
+
+        <label for="mu">mu:</label>
+        <input type="number" step="any" id="mu" required value="1"><br>
+
+        <label for="num-RB">Num RB:</label>
+        <input type="number" id="num-RB" required value="16"><br>
+
+        <label for="p0">p0:</label>
+        <input type="number" step="any" id="p0" required value="-10"><br>
+
+        <label for="alpha">alpha:</label>
+        <input type="number" step="any" id="alpha" required value="1"><br>
+
+        <label for="pathloss">Pathloss:</label>
+        <input type="number" step="any" id="pathloss" required value="32"><br>
+
+        <label for="delta-TF">Delta TF:</label>
+        <input type="number" step="any" id="delta-TF" required value="2"><br>
+
+        <label for="tpc-adjustment">TPC Adjustment:</label>
+        <input type="number" step="any" id="tpc-adjustment" required value="0"><br>
+
+        <button type="button" onclick="calculatePower()">Calculate</button>
+    </form>
+    <p id="result"></p>
+
+    <pre>
+==================================================================================
+07:59:43.496    [0xB821]    BCCH_DL_SCH / SystemInformationBlockType1
+            initialUplinkBWP 
+            {
+              genericParameters 
+              {
+                subcarrierSpacing kHz30 //mu=1
+              },
+              pusch-ConfigCommon setup : 
+                {
+                  p0-NominalWithGrant -70 //p0-NominalWithGrant
+                },
+
+07:59:43.640    [0xB821]    DL_CCCH / RRC Setup
+                              p0-AlphaSets 
+                              {
+                                {
+                                  p0-PUSCH-AlphaSetId 0,
+                                  p0 -10, //p0=-10
+                                  alpha alpha1 //alpha=1
+                                }
+
+// (808,19) PUSCH Num RB=16
+07:59:43.665    [0xB883]    NR5G MAC UL Physical Channel Schedule Report
+   ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   |   |                     |       |Carriers                                                                      
+   |   |                     |       |       |              |                                   |      |                                                                            
+   |   |                     |       |       |              |                                   |      |PUSCH Data                                                                  
+   |   |                     |       |       |              |                                   |      |            |      |       |    |    |                |    |       |       |
+   |   |                     |       |       |              |                                   |Dual  |            |      |       |    |    |                |DMRS|       |       |
+   |   |System Time          |Num    |Carrier|              |                                   |Pol   |Is Second   |Start |Num    |HARQ|    |                |Add |RB     |       |
+   |#  |Slot|Numerology|Frame|Carrier|ID     |RNTI Type     |Phychan Bit Mask                   |Status|Phychan     |Symbol|Symbols|ID  |MCS |MCS Table       |Pos |Start  |Num RBs|
+   ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   |  0|  19|     30kHz|  808|      1|      0|        C_RNTI|                              PUSCH|     0|           0|     0|     12|   0|   9|           64QAM|   1|      0|     16|
+
+// (808,19) PUSCH Pathloss=32, Delta TF=2, TPC Adjustment=0, PUSCH Transmit Power = -30
+07:59:43.693    [0xB8D2]    NR5G LL1 FW MAC TX IU Power
+         System Frame Number       = 808
+         SCS                       = 1
+         Slot Number               = 19
+      Power Info
+         --------------------------------------------------------------------------
+         |   |       |       |CarrierIdType                                        
+         |   |       |       |PUSCH Data                                          |
+         |   |Carrier|Channel|Transmit|        |TPC       |PHR |Delta|Is  |Minimum|
+         |#  |Id     |Type   |Power   |Pathloss|Adjustment|MTPL|TF   |Msg3|Power  |
+         --------------------------------------------------------------------------
+         |  0|      0|  PUSCH|     -30|      32|         0|  21|    2|   0|    -38|
+    </pre>
+
+    <script>
+        function calculatePower() {
+            const p0_NominalWithGrant = parseFloat(document.getElementById('p0-NominalWithGrant').value);
+            const mu = parseFloat(document.getElementById('mu').value);
+            const num_RB = parseInt(document.getElementById('num-RB').value);
+            const p0 = parseFloat(document.getElementById('p0').value);
+            const alpha = parseFloat(document.getElementById('alpha').value);
+            const pathloss = parseFloat(document.getElementById('pathloss').value);
+            const delta_TF = parseFloat(document.getElementById('delta-TF').value);
+            const tpc_adjustment = parseFloat(document.getElementById('tpc-adjustment').value);
+
+            const pusch_transmit_power = p0_NominalWithGrant + 10 * (Math.log10(2 ** mu * num_RB)) + p0 + alpha * pathloss + delta_TF + tpc_adjustment;
+
+            const calculationDetails = `PUSCH Transmit Power:<br>
+                = ${p0_NominalWithGrant} + 10 * log10(2^${mu} * ${num_RB}) + ${p0} + ${alpha} * ${pathloss} + ${delta_TF} + ${tpc_adjustment}<br>
+                = ${pusch_transmit_power.toFixed(2)}`;
+            
+            document.getElementById('result').innerHTML = calculationDetails;
+        }
+    </script>
+</body>
+</html>
