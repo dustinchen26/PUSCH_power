@@ -32,9 +32,14 @@
 			<label for="p0-NominalWithGrant">p0-NominalWithGrant:</label>
 			<input type="number" step="any" id="p0-NominalWithGrant" required value="-70"><br>
         </li>
-
+		
         <li>	
-			<label for="mu">mu:</label>
+			<label for="p0">p0:</label>
+			<input type="number" step="any" id="p0" required value="-10"><br>
+        </li>
+		
+        <li>	
+			<label for="mu">μ:</label>
 			<input type="number" step="any" id="mu" required value="1"><br>
         </li>
 
@@ -44,12 +49,7 @@
         </li>
 
         <li>	
-			<label for="p0">p0:</label>
-			<input type="number" step="any" id="p0" required value="-10"><br>
-        </li>
-
-        <li>	
-			<label for="alpha">alpha:</label>
+			<label for="alpha">α:</label>
 			<input type="number" step="any" id="alpha" required value="1"><br>
         </li>
 
@@ -70,21 +70,88 @@
     </ul>
         <button type="button" onclick="calculatePower()">Calculate</button>
     </form>
-    <p id="result"></p>
+	 
+    <pre id="calculation-result">
 
-    <pre>
-==================================================================================
-07:59:43.496    [0xB821]    BCCH_DL_SCH / SystemInformationBlockType1
+    </pre>
+
+    <script>
+        function calculatePower() {
+            const p0_NominalWithGrant = parseFloat(document.getElementById('p0-NominalWithGrant').value);
+            const mu = parseFloat(document.getElementById('mu').value);
+            const num_RB = parseInt(document.getElementById('num-RB').value);
+            const p0 = parseFloat(document.getElementById('p0').value);
+            const alpha = parseFloat(document.getElementById('alpha').value);
+            const pathloss = parseFloat(document.getElementById('pathloss').value);
+            const delta_TF = parseFloat(document.getElementById('delta-TF').value);
+            const tpc_adjustment = parseFloat(document.getElementById('tpc-adjustment').value);
+
+            const pusch_transmit_power = p0_NominalWithGrant + 10 * (Math.log10(2 ** mu * num_RB)) + p0 + alpha * pathloss + delta_TF + tpc_adjustment;
+
+            const calculationDetails = `PUSCH Transmit Power
+=  P_PUSCH
+=  min{ P_CMAX , P_O_PUSCH                          + 10*log(2^μ * M_PUSCH_RB)+ α * PL + ΔTF + f }
+=  min{ MTPL   , P_O_NOMINAL_PUSCH   + P_O_UE_PUSCH + 10*log(2^μ * M_PUSCH_RB)+ α * PL + ΔTF + f }
+=  min{ MTPL   , p0-NominalWithGrant + p0           + 10*log(2^μ * NumRB) + alpha * Pathloss + Delta_TF + TPC_Adjustment }
+=  p0-NominalWithGrant + p0   + 10 * log(2^μ* NumRB ) + alpha * Pathloss + Delta_TF + TPC_Adjustment
+=   ${p0_NominalWithGrant}               + (${p0}) + 10 * log10(2^${mu} * ${num_RB})  +  ${alpha}   *   ${pathloss}      +   ${delta_TF}     +   ${tpc_adjustment}
+= ${pusch_transmit_power.toFixed(2)} dBm`;
+
+            document.getElementById('calculation-result').innerText = calculationDetails;
+        }
+    </script>
+	
+<pre>
+=========================================================================================================================
+// DU xml
+        &lt;nSsbPwr&gt;-15&lt;/nSsbPwr&gt;
+        &lt;puschPwrCfg&gt;
+            &lt;msg3deltaPreamble&gt;0&lt;/msg3deltaPreamble&gt;
+            &lt;p0nominal&gt;-70&lt;/p0nominal&gt;
+            &lt;msg3alpha&gt;ALL&lt;/msg3alpha&gt;
+            &lt;p0&gt;-10&lt;/p0&gt;
+            &lt;alpha&gt;ALL&lt;/alpha&gt;
+            &lt;deltaMcsEnabled&gt;true&lt;/deltaMcsEnabled&gt;
+            &lt;isAccumulated&gt;true&lt;/isAccumulated&gt;
+        &lt;/puschPwrCfg&gt;
+
+// UE log
+07:59:43.496	[0xB821]	BCCH_DL_SCH / SystemInformationBlockType1
+          uplinkConfigCommon 
+          {
+            frequencyInfoUL 
+            {
+              scs-SpecificCarrierList 
+              {
+                {
+                  subcarrierSpacing kHz30, //μ=1
+                }
+              },
+              p-Max 33
+            },
             initialUplinkBWP 
             {
               genericParameters 
               {
-                subcarrierSpacing kHz30 //mu=1
+                subcarrierSpacing kHz30 //μ=1
               },
               pusch-ConfigCommon setup : 
                 {
-                  p0-NominalWithGrant -70 //p0-NominalWithGrant
+                  p0-NominalWithGrant -70 //p0-NominalWithGrant = -70
                 },
+          ss-PBCH-BlockPower -15 // Pathloss = ss-PBCH-BlockPower - RSRP = (-15) - (-46.28) = 31.28 near 32
+        },
+
+// RSRP = -46.28
+07:59:43.614	[0xB97F]	NR5G ML1 Searcher Measurement Database Update Ext
+      -----------------------------------------------------------------------------------------------------------------------------------------
+      |   |      |      |     |            |            |Detected Beams                                                                       |
+      |   |      |      |     |            |            |   |     |RX Beam Info           |NR2NR       |NR2NR       |L2NR        |L2NR        |
+      |   |      |PBCH  |Num  |Cell Quality|Cell Quality|   |SSB  |RX Beam|               |Filtered Tx |Filtered Tx |Filtered Tx |Filtered Tx |
+      |#  |PCI   |SFN   |Beams|RSRP        |RSRQ        |#  |Index|Id     |RSRP           |Beam RSRP L3|Beam RSRQ L3|Beam RSRP L3|Beam RSRQ L3|
+      -----------------------------------------------------------------------------------------------------------------------------------------
+      |  0|     1|   804|    1|     -46.281|     -10.359|  0|    0|     NA|        -46.266|     -46.281|     -10.359|          NA|          NA|
+      |   |      |      |     |            |            |   |     |     NA|        -48.594|            |            |            |            |
 
 07:59:43.640    [0xB821]    DL_CCCH / RRC Setup
                               p0-AlphaSets 
@@ -121,28 +188,7 @@
          |#  |Id     |Type   |Power   |Pathloss|Adjustment|MTPL|TF   |Msg3|Power  |
          --------------------------------------------------------------------------
          |  0|      0|  PUSCH|     -30|      32|         0|  21|    2|   0|    -38|
-    </pre>
-
-    <script>
-        function calculatePower() {
-            const p0_NominalWithGrant = parseFloat(document.getElementById('p0-NominalWithGrant').value);
-            const mu = parseFloat(document.getElementById('mu').value);
-            const num_RB = parseInt(document.getElementById('num-RB').value);
-            const p0 = parseFloat(document.getElementById('p0').value);
-            const alpha = parseFloat(document.getElementById('alpha').value);
-            const pathloss = parseFloat(document.getElementById('pathloss').value);
-            const delta_TF = parseFloat(document.getElementById('delta-TF').value);
-            const tpc_adjustment = parseFloat(document.getElementById('tpc-adjustment').value);
-
-            const pusch_transmit_power = p0_NominalWithGrant + 10 * (Math.log10(2 ** mu * num_RB)) + p0 + alpha * pathloss + delta_TF + tpc_adjustment;
-
-            const calculationDetails = `PUSCH Transmit Power:<br>
-                =  p0-NominalWithGrant+ 10*log(2^mu* Num RB )+ p0+alpha*Pathloss + Delta TF + TPC Adjustment   <br>
-                = ${p0_NominalWithGrant} + 10 * log10(2^${mu} * ${num_RB}) + ${p0} + ${alpha} * ${pathloss} + ${delta_TF} + ${tpc_adjustment}<br>
-                = ${pusch_transmit_power.toFixed(2)} dBm`;
-            
-            document.getElementById('result').innerHTML = calculationDetails;
-        }
-    </script>
+</pre>	
+	
 </body>
 </html>
