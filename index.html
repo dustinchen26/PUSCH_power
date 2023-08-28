@@ -1,3 +1,9 @@
+<!-- 
+  Copyright © [2023] [Dustin_Chen]. All rights reserved.
+  Author: Dustin Chen
+  Email:  Dustin_Chen@compal.com or chuhpsdustin@gmail.com
+-->  
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,33 +22,52 @@
 	<p style="margin: 0;">Author: Dustin_Chen, email: <a href="mailto:Dustin_Chen@compal.com" style="line-height: 1;">Dustin_Chen@compal.com</a> or <a href="mailto:chuhpsdustin@gmail.com" style="line-height: 1;">chuhpsdustin@gmail.com</a></p>	
 	<p>Ref: ETSI TS 138 213 chap 7  Uplink Power control sec 7.1  Physical uplink shared channel </p>
     <pre>
-      <img src="https://raw.githubusercontent.com/dustinchen26/PUSCH_power/master/formula.png" alt="GitHub Image" width="700">    </pre>
+      <img src="https://raw.githubusercontent.com/dustinchen26/PUSCH_power/master/formula.png" alt="GitHub Image" width="750">    </pre>
     <form id="pusch-form">
-		<label><b>● Please enter the following parameters, and then press Calculate to get the PUSCH power calculation result</b><br></label>
-        <label for="p0-NominalWithGrant">p0-NominalWithGrant:</label>
-        <input type="number" step="any" id="p0-NominalWithGrant" required value="-70"><br>
+		
+	<p><b>Enter the following parameters and press "Calculate" to get the PUSCH power</b><br></p>
 
-        <label for="mu">mu:</label>
-        <input type="number" step="any" id="mu" required value="1"><br>
+    <ul>
+        <li>	
+			<label for="p0-NominalWithGrant">p0-NominalWithGrant:</label>
+			<input type="number" step="any" id="p0-NominalWithGrant" required value="-70"><br>
+        </li>
 
-        <label for="num-RB">Num RB:</label>
-        <input type="number" id="num-RB" required value="16"><br>
+        <li>	
+			<label for="mu">mu:</label>
+			<input type="number" step="any" id="mu" required value="1"><br>
+        </li>
 
-        <label for="p0">p0:</label>
-        <input type="number" step="any" id="p0" required value="-10"><br>
+        <li>	
+			<label for="num-RB">Num RB:</label>
+			<input type="number" id="num-RB" required value="16"><br>
+        </li>
 
-        <label for="alpha">alpha:</label>
-        <input type="number" step="any" id="alpha" required value="1"><br>
+        <li>	
+			<label for="p0">p0:</label>
+			<input type="number" step="any" id="p0" required value="-10"><br>
+        </li>
 
-        <label for="pathloss">Pathloss:</label>
-        <input type="number" step="any" id="pathloss" required value="32"><br>
+        <li>	
+			<label for="alpha">alpha:</label>
+			<input type="number" step="any" id="alpha" required value="1"><br>
+        </li>
 
-        <label for="delta-TF">Delta TF:</label>
-        <input type="number" step="any" id="delta-TF" required value="2"><br>
+        <li>	
+			<label for="pathloss">Pathloss:</label>
+			<input type="number" step="any" id="pathloss" required value="32"><br>
+        </li>
 
-        <label for="tpc-adjustment">TPC Adjustment:</label>
-        <input type="number" step="any" id="tpc-adjustment" required value="0"><br>
+        <li>	
+			<label for="delta-TF">Delta TF:</label>
+			<input type="number" step="any" id="delta-TF" required value="2"><br>
+        </li>
 
+        <li>	
+			<label for="tpc-adjustment">TPC Adjustment:</label>
+			<input type="number" step="any" id="tpc-adjustment" required value="0"><br>
+        </li>
+    </ul>
         <button type="button" onclick="calculatePower()">Calculate</button>
     </form>
     <p id="result"></p>
@@ -114,7 +139,7 @@
             const calculationDetails = `PUSCH Transmit Power:<br>
                 =  p0-NominalWithGrant+ 10*log(2^mu* Num RB )+ p0+alpha*Pathloss + Delta TF + TPC Adjustment   <br>
                 = ${p0_NominalWithGrant} + 10 * log10(2^${mu} * ${num_RB}) + ${p0} + ${alpha} * ${pathloss} + ${delta_TF} + ${tpc_adjustment}<br>
-                = ${pusch_transmit_power.toFixed(2)}`;
+                = ${pusch_transmit_power.toFixed(2)} dBm`;
             
             document.getElementById('result').innerHTML = calculationDetails;
         }
