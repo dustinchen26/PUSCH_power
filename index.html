@@ -2,78 +2,129 @@
   Copyright © [2023] [Dustin_Chen]. All rights reserved.
   Author: Dustin Chen
   Email:  Dustin_Chen@compal.com or chuhpsdustin@gmail.com
--->  
+-->
 
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>PUSCH Transmit Power Calculator</title>
-	
-<style>
+  <title>PUSCH Transmit Power Calculator</title>
+
+  <style>
+    body {
+      line-height: 1.2;
+      font-family: Roboto, sans-serif;
+      font-size: 14px;
+    }
+
     /* 調整輸入框的寬度 */
     input[type="number"] {
-        width: 50px;
+      width: 50px;
     }
-</style>	
-	
+
+    .red-text {
+      color: red;
+    }
+
+    .LimeGreen-text {
+      color: LimeGreen;
+    }
+
+    .SeaGreen-text {
+      color: SeaGreen;
+    }
+
+    .fuchsia-text {
+      color: fuchsia;
+    }
+
+    .blue-text {
+      color: blue;
+    }
+
+    .mediumturquoise-text {
+      color: mediumturquoise;
+    }
+
+    .image-container {
+      margin-left: 60px;
+    }
+  </style>
+
 </head>
+
 <body>
-    <h1>PUSCH Transmit Power Calculator</h1>
-	<p style="margin: 0;">Author: Dustin_Chen, email: <a href="mailto:Dustin_Chen@compal.com" style="line-height: 1;">Dustin_Chen@compal.com</a> or <a href="mailto:chuhpsdustin@gmail.com" style="line-height: 1;">chuhpsdustin@gmail.com</a></p>	
-	<p>Ref: ETSI TS 138 213 chap 7  Uplink Power control sec 7.1  Physical uplink shared channel </p>
-    <pre>
-      <img src="https://raw.githubusercontent.com/dustinchen26/PUSCH_power/master/formula.png" alt="GitHub Image" width="750">    </pre>
-    <form id="pusch-form">
-		
-	<p><b>Enter the following parameters and press "Calculate" to get the PUSCH power</b><br></p>
+  <h1>PUSCH Transmit Power Calculator</h1>
+  <p style="margin: 0;">Author: Dustin_Chen, email: <a href="mailto:Dustin_Chen@compal.com"
+      style="line-height: 1;">Dustin_Chen@compal.com</a> or <a href="mailto:chuhpsdustin@gmail.com"
+      style="line-height: 1;">chuhpsdustin@gmail.com</a></p>
 
-    <ul>
-        <li>	
-			<label for="p0-NominalWithGrant">p0-NominalWithGrant:</label>
-			<input type="number" step="any" id="p0-NominalWithGrant" required value="-70"><br>
-        </li>
-		
-        <li>	
-			<label for="p0">p0:</label>
-			<input type="number" step="any" id="p0" required value="-10"><br>
-        </li>
-		
-        <li>	
-			<label for="mu">μ:</label>
-			<input type="number" step="any" id="mu" required value="1"><br>
-        </li>
+  <ul>
+    <li>
+      【Spec】: ETSI TS 138 213 / chap 7 Uplink Power control / sec 7.1 Physical uplink shared channel
 
-        <li>	
-			<label for="num-RB">Num RB:</label>
-			<input type="number" id="num-RB" required value="16"><br>
-        </li>
+      <div class="image-container">
+        <img src="https://raw.githubusercontent.com/dustinchen26/PUSCH_power/master/formula.png" alt="GitHub Image"
+          width="720"> </pre>
+      </div>
 
-        <li>	
-			<label for="alpha">α:</label>
-			<input type="number" step="any" id="alpha" required value="1"><br>
-        </li>
+    </li>
+    <li>
+      【Formula】:PUSCH_Transmit_Power = <span class="red-text">p0-NominalWithGrant + p0</span> + 10 * log(2^μ* <span
+        class="LimeGreen-text">NumRB</span> ) + <span class="SeaGreen-text">alpha</span> * <span
+        class="blue-text">Pathloss</span> + Delta_TF + <span class="fuchsia-text">TPC_Adjustment</span>
+      <ul>
+        <li>
+          Enter the following parameters, and press "Calculate" to get the PUSCH power
+          <ul>
+            <li>
+              <label for="p0-NominalWithGrant"><span class="red-text">p0nominal:</span></label>
+              <input type="number" step="any" id="p0-NominalWithGrant" required value="-70"><br>
+            </li>
 
-        <li>	
-			<label for="pathloss">Pathloss:</label>
-			<input type="number" step="any" id="pathloss" required value="32"><br>
-        </li>
+            <li>
+              <label for="p0"><span class="red-text">p0:</span></label>
+              <input type="number" step="any" id="p0" required value="-10"><br>
+            </li>
 
-        <li>	
-			<label for="delta-TF">Delta TF:</label>
-			<input type="number" step="any" id="delta-TF" required value="2"><br>
-        </li>
+            <li>
+              <label for="mu">μ:</label>
+              <input type="number" step="any" id="mu" required value="1"><br>
+            </li>
 
-        <li>	
-			<label for="tpc-adjustment">TPC Adjustment:</label>
-			<input type="number" step="any" id="tpc-adjustment" required value="0"><br>
-        </li>
+            <li>
+              <label for="num-RB"><span class="LimeGreen-text">Num RB:</span></label>
+              <input type="number" id="num-RB" required value="16"><br>
+            </li>
+
+            <li>
+              <label for="alpha"><span class="SeaGreen-text">alpha (can be 0, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9,
+                  1):</span></label>
+              <input type="number" step="any" id="alpha" required value="1"><br>
+            </li>
+
+            <li>
+              <label for="pathloss"><span class="blue-text">Pathloss( = nSsbPwr - RSRP):</span></label>
+              <input type="number" step="any" id="pathloss" required value="32"><br>
+            </li>
+
+            <li>
+              <label for="delta-TF">Delta TF:</label>
+              <input type="number" step="any" id="delta-TF" required value="2"><br>
+            </li>
+
+            <li>
+              <label for="tpc-adjustment"><span class="fuchsia-text">TPC Adjustment (need to enable
+                  featureSetBitMap):</span></label>
+              <input type="number" step="any" id="tpc-adjustment" required value="0"><br>
+            </li>
+            <button type="button" onclick="calculatePower()">Calculate</button>
+            <pre id="calculation-result">
+			</ul>
+		</li>
+	  </ul>
+    </li>
     </ul>
-        <button type="button" onclick="calculatePower()">Calculate</button>
-    </form>
-	 
-    <pre id="calculation-result">
-
-    </pre>
 
     <script>
         function calculatePower() {
@@ -88,7 +139,7 @@
 
             const pusch_transmit_power = p0_NominalWithGrant + 10 * (Math.log10(2 ** mu * num_RB)) + p0 + alpha * pathloss + delta_TF + tpc_adjustment;
 
-            const calculationDetails = `PUSCH Transmit Power
+            const calculationDetails = `PUSCH_Transmit_Power
 =  P_PUSCH
 =  min{ P_CMAX , P_O_PUSCH                          + 10*log(2^μ * M_PUSCH_RB)+ α * PL + ΔTF + f }
 =  min{ MTPL   , P_O_NOMINAL_PUSCH   + P_O_UE_PUSCH + 10*log(2^μ * M_PUSCH_RB)+ α * PL + ΔTF + f }
@@ -103,19 +154,33 @@
 	
 <pre>
 =========================================================================================================================
-// DU xml
-        &lt;nSsbPwr&gt;-15&lt;/nSsbPwr&gt;
+<strong>// DU xml</strong>
+        <span class="blue-text">&lt;nSsbPwr&gt;-15&lt;/nSsbPwr&gt;....(Pathloss = nSsbPwr - RSRP) </span>
         &lt;puschPwrCfg&gt;
             &lt;msg3deltaPreamble&gt;0&lt;/msg3deltaPreamble&gt;
-            &lt;p0nominal&gt;-70&lt;/p0nominal&gt;
+            <span class="red-text">&lt;p0nominal&gt;-70&lt;/p0nominal&gt;</span>
             &lt;msg3alpha&gt;ALL&lt;/msg3alpha&gt;
-            &lt;p0&gt;-10&lt;/p0&gt;
-            &lt;alpha&gt;ALL&lt;/alpha&gt;
+            <span class="red-text">&lt;p0&gt;-10&lt;/p0&gt;</span>
+            <span class="SeaGreen-text">&lt;alpha&gt;ALL&lt;/alpha&gt;....(can be A0, A4, A5, A6, A7, A8, A9, ALL)</span>
             &lt;deltaMcsEnabled&gt;true&lt;/deltaMcsEnabled&gt;
-            &lt;isAccumulated&gt;true&lt;/isAccumulated&gt;
+            <span class="fuchsia-text">&lt;isAccumulated&gt;true&lt;/isAccumulated&gt;</span>
         &lt;/puschPwrCfg&gt;
+        <span class="fuchsia-text">&lt;featureSetBitMap&gt;27&lt;/featureSetBitMap&gt;</span>
+		
+<strong>// To enable feature "TPC Adjustment", you can turn on featureSetBitMap = 1+2+8+16 = 27</strong>
+    typedef enum rgrFeatureSetBitMap
+    {
+       RGR_ALL_FEATURE_DISABLE =0, /*!< No Feature is enabled*/
+       RGR_DL_LA_ENABLE        =1, /*!< DL LA is enabled*/
+       RGR_UL_LA_ENABLE        =2, /*!< UL LA is enabled*/
+       RGR_TA_ENABLE           =4, /*!< TA is enabled*/
+       RGR_PUCCH_PWR_CNTRL_ENABLE = 8, /*!< PUCCH Power Control is enabled*/
+       RGR_PUSCH_CLOSE_LOOP_PWR_CNTRL_ENABLE = 16, /*!< PUSCH CLose loop power control is enabled */
+       RGR_PUSCH_PWR_CNTRL_ENABLE = 32, /*!< PUSCH Power Control is enabled*/
+       RGR_DL_LA_HARQ_BASED_ENABLE = 64, /*!< HARQ BASED LA is enabled*/
+    }RgrFeatureSetBitMap;
 
-// UE log
+<strong>// UE QXDM_log </strong>
 07:59:43.496	[0xB821]	BCCH_DL_SCH / SystemInformationBlockType1
           uplinkConfigCommon 
           {
@@ -137,12 +202,12 @@
               },
               pusch-ConfigCommon setup : 
                 {
-                  p0-NominalWithGrant -70 //p0-NominalWithGrant = -70
+                  <span class="red-text">p0-NominalWithGrant -70 </span>
                 },
-          ss-PBCH-BlockPower -15 // Pathloss = ss-PBCH-BlockPower - RSRP = (-15) - (-46.28) = 31.28 near 32
+          <span class="blue-text">ss-PBCH-BlockPower -15 // Pathloss = ss-PBCH-BlockPower - RSRP = (-15) - (-46.28) = 31.28 near 32 </span>
         },
 
-// RSRP = -46.28
+<span class="blue-text">// RSRP = -46.28</span>
 07:59:43.614	[0xB97F]	NR5G ML1 Searcher Measurement Database Update Ext
       -----------------------------------------------------------------------------------------------------------------------------------------
       |   |      |      |     |            |            |Detected Beams                                                                       |
@@ -150,7 +215,7 @@
       |   |      |PBCH  |Num  |Cell Quality|Cell Quality|   |SSB  |RX Beam|               |Filtered Tx |Filtered Tx |Filtered Tx |Filtered Tx |
       |#  |PCI   |SFN   |Beams|RSRP        |RSRQ        |#  |Index|Id     |RSRP           |Beam RSRP L3|Beam RSRQ L3|Beam RSRP L3|Beam RSRQ L3|
       -----------------------------------------------------------------------------------------------------------------------------------------
-      |  0|     1|   804|    1|     -46.281|     -10.359|  0|    0|     NA|        -46.266|     -46.281|     -10.359|          NA|          NA|
+      |  0|     1|   804|    1|     <span class="blue-text">-46.281</span>|     -10.359|  0|    0|     NA|        -46.266|     -46.281|     -10.359|          NA|          NA|
       |   |      |      |     |            |            |   |     |     NA|        -48.594|            |            |            |            |
 
 07:59:43.640    [0xB821]    DL_CCCH / RRC Setup
@@ -158,11 +223,11 @@
                               {
                                 {
                                   p0-PUSCH-AlphaSetId 0,
-                                  p0 -10, //p0=-10
-                                  alpha alpha1 //alpha=1
+                                  <span class="red-text">p0 -10, //p0=-10</span>
+                                  <span class="SeaGreen-text">alpha alpha1 //alpha=1</span>
                                 }
 
-// (808,19) PUSCH Num RB=16
+// (808,19) PUSCH <span class="LimeGreen-text">Num RB=16</span>
 07:59:43.665    [0xB883]    NR5G MAC UL Physical Channel Schedule Report
    ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
    |   |                     |       |Carriers                                                                      
@@ -175,7 +240,7 @@
    ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
    |  0|  19|     30kHz|  808|      1|      0|        C_RNTI|                              PUSCH|     0|           0|     0|     12|   0|   9|           64QAM|   1|      0|     16|
 
-// (808,19) PUSCH Pathloss=32, Delta TF=2, TPC Adjustment=0, PUSCH Transmit Power = -30
+// (808,19) PUSCH Pathloss=32, Delta TF=2, <span class="fuchsia-text">TPC Adjustment=0</span>, PUSCH Transmit Power = -30
 07:59:43.693    [0xB8D2]    NR5G LL1 FW MAC TX IU Power
          System Frame Number       = 808
          SCS                       = 1
@@ -188,7 +253,8 @@
          |#  |Id     |Type   |Power   |Pathloss|Adjustment|MTPL|TF   |Msg3|Power  |
          --------------------------------------------------------------------------
          |  0|      0|  PUSCH|     -30|      32|         0|  21|    2|   0|    -38|
-</pre>	
-	
+</pre>
+
 </body>
+
 </html>
