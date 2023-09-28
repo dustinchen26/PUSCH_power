@@ -14,7 +14,7 @@
     body {
       line-height: 1.2;
       font-family: Roboto, sans-serif;
-      font-size: 14px;
+      font-size: 16px;
     }
 
     /* 調整輸入框的寬度 */
@@ -46,8 +46,12 @@
       color: mediumturquoise;
     }
 
+    .purple-text {
+      color: purple;
+    }
+
     .image-container {
-      margin-left: 60px;
+      margin-left: 20px;
     }
   </style>
 
@@ -64,8 +68,8 @@
       【Spec】: ETSI TS 138 213 / chap 7 Uplink Power control / sec 7.1 Physical uplink shared channel
 
       <div class="image-container">
-        <img src="https://raw.githubusercontent.com/dustinchen26/PUSCH_power/master/formula.png" alt="GitHub Image"
-          width="720"> </pre>
+        <img src="https://raw.githubusercontent.com/dustinchen26/PUSCH_power/master/PUSCH.png" alt="GitHub Image"
+          width="1500"> </pre>
       </div>
 
     </li>
@@ -109,13 +113,12 @@
             </li>
 
             <li>
-              <label for="delta-TF">Delta TF:</label>
+              <label for="delta-TF"><span class="purple-text">Delta TF:</span></label>
               <input type="number" step="any" id="delta-TF" required value="2"><br>
             </li>
 
             <li>
-              <label for="tpc-adjustment"><span class="fuchsia-text">TPC Adjustment (need to enable
-                  featureSetBitMap):</span></label>
+              <label for="tpc-adjustment"><span class="fuchsia-text">TPC Adjustment (need to enable featureSetBitMap "RGR_PUSCH_CLOSE_LOOP_PWR_CNTRL_ENABLE" ):</span></label>
               <input type="number" step="any" id="tpc-adjustment" required value="0"><br>
             </li>
             <button type="button" onclick="calculatePower()">Calculate</button>
@@ -163,19 +166,27 @@
             <span class="red-text">&lt;p0&gt;-10&lt;/p0&gt;</span>
             <span class="SeaGreen-text">&lt;alpha&gt;ALL&lt;/alpha&gt;....(can be A0, A4, A5, A6, A7, A8, A9, ALL)</span>
             &lt;deltaMcsEnabled&gt;true&lt;/deltaMcsEnabled&gt;
-            <span class="fuchsia-text">&lt;isAccumulated&gt;true&lt;/isAccumulated&gt;</span>
+            <span class="fuchsia-text">&lt;isAccumulated&gt;true&lt;/isAccumulated&gt;...(can be true, false)</span>
         &lt;/puschPwrCfg&gt;
-        <span class="fuchsia-text">&lt;featureSetBitMap&gt;27&lt;/featureSetBitMap&gt;</span>
+
+        <span class="fuchsia-text">&lt;featureSetBitMap&gt;27&lt;/featureSetBitMap&gt;...(TPC Adjustment need to enable featureSetBitMap "RGR_PUSCH_CLOSE_LOOP_PWR_CNTRL_ENABLE")</span>
+
+            &lt;ulTargetCqi&gt;
+                <span class="fuchsia-text">&lt;targetCqi&gt;7&lt;/targetCqi&gt;...(can be 1 to 15)</span>
+
+<strong>// DU sys_config.txt</strong>
+<span class="fuchsia-text"># nSNR = nSNR + nSNR_add 
+NSNR_ADD   = 9 ... (uint8_t nSNR_add, can be 0 to 255. default NSNR_ADD = 9) </span>
 		
 <strong>// To enable feature "TPC Adjustment", you can turn on featureSetBitMap = 1+2+8+16 = 27</strong>
     typedef enum rgrFeatureSetBitMap
     {
        RGR_ALL_FEATURE_DISABLE =0, /*!< No Feature is enabled*/
-       RGR_DL_LA_ENABLE        =1, /*!< DL LA is enabled*/
-       RGR_UL_LA_ENABLE        =2, /*!< UL LA is enabled*/
+       <span class="fuchsia-text">RGR_DL_LA_ENABLE        =1, /*!< DL LA is enabled*/</span>
+       <span class="fuchsia-text">RGR_UL_LA_ENABLE        =2, /*!< UL LA is enabled*/</span>
        RGR_TA_ENABLE           =4, /*!< TA is enabled*/
        RGR_PUCCH_PWR_CNTRL_ENABLE = 8, /*!< PUCCH Power Control is enabled*/
-       RGR_PUSCH_CLOSE_LOOP_PWR_CNTRL_ENABLE = 16, /*!< PUSCH CLose loop power control is enabled */
+       <span class="fuchsia-text">RGR_PUSCH_CLOSE_LOOP_PWR_CNTRL_ENABLE = 16, /*!< PUSCH CLose loop power control is enabled */</span>
        RGR_PUSCH_PWR_CNTRL_ENABLE = 32, /*!< PUSCH Power Control is enabled*/
        RGR_DL_LA_HARQ_BASED_ENABLE = 64, /*!< HARQ BASED LA is enabled*/
     }RgrFeatureSetBitMap;
@@ -238,9 +249,9 @@
    |   |System Time          |Num    |Carrier|              |                                   |Pol   |Is Second   |Start |Num    |HARQ|    |                |Add |RB     |       |
    |#  |Slot|Numerology|Frame|Carrier|ID     |RNTI Type     |Phychan Bit Mask                   |Status|Phychan     |Symbol|Symbols|ID  |MCS |MCS Table       |Pos |Start  |Num RBs|
    ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-   |  0|  19|     30kHz|  808|      1|      0|        C_RNTI|                              PUSCH|     0|           0|     0|     12|   0|   9|           64QAM|   1|      0|     16|
+   |  0|  19|     30kHz|  808|      1|      0|        C_RNTI|                              PUSCH|     0|           0|     0|     12|   0|   9|           64QAM|   1|      0|     <span class="LimeGreen-text">16</span>|
 
-// (808,19) PUSCH Pathloss=32, Delta TF=2, <span class="fuchsia-text">TPC Adjustment=0</span>, PUSCH Transmit Power = -30
+// (808,19) PUSCH <span class="blue-text">Pathloss=32</span>, <span class="purple-text">Delta TF=2</span>, <span class="fuchsia-text">TPC Adjustment=0</span>, PUSCH Transmit Power = -30
 07:59:43.693    [0xB8D2]    NR5G LL1 FW MAC TX IU Power
          System Frame Number       = 808
          SCS                       = 1
@@ -252,7 +263,7 @@
          |   |Carrier|Channel|Transmit|        |TPC       |PHR |Delta|Is  |Minimum|
          |#  |Id     |Type   |Power   |Pathloss|Adjustment|MTPL|TF   |Msg3|Power  |
          --------------------------------------------------------------------------
-         |  0|      0|  PUSCH|     -30|      32|         0|  21|    2|   0|    -38|
+         |  0|      0|  PUSCH|     -30|      <span class="blue-text">32</span>|         <span class="fuchsia-text">0</span>|  21|    <span class="purple-text">2</span>|   0|    -38|
 </pre>
 
 </body>
