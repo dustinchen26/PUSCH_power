@@ -157,6 +157,16 @@
 	
 <pre>
 =========================================================================================================================
+<strong>Example:</strong>
+PUSCH_Transmit_Power
+=  P_PUSCH
+=  min{ P_CMAX , P_O_PUSCH                          + 10*log(2^μ * M_PUSCH_RB)+ α * PL + ΔTF + f }
+=  min{ MTPL   , P_O_NOMINAL_PUSCH   + P_O_UE_PUSCH + 10*log(2^μ * M_PUSCH_RB)+ α * PL + ΔTF + f }
+=  min{ MTPL   , p0-NominalWithGrant + p0           + 10*log(2^μ * NumRB) + alpha * Pathloss + Delta_TF + TPC_Adjustment }
+=  p0-NominalWithGrant + p0   + 10 * log(2^μ* NumRB ) + alpha * Pathloss + Delta_TF + TPC_Adjustment
+=   -70               + (-10) + 10 * log10(2^1 * 16)  +  1   *   32      +   2     +   0
+= -30.95 dBm
+
 <strong>// DU xml</strong>
         <span class="blue-text">&lt;nSsbPwr&gt;-15&lt;/nSsbPwr&gt;....(Pathloss = nSsbPwr - RSRP) </span>
         &lt;puschPwrCfg&gt;
