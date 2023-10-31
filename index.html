@@ -53,6 +53,12 @@
     .image-container {
       margin-left: 20px;
     }
+	
+    pre {
+        font-size: 14px;
+        line-height: 1.2;
+    }
+	
   </style>
 
 </head>
@@ -82,43 +88,42 @@
           Enter the following parameters, and press "Calculate" to get the PUSCH power
           <ul>
             <li>
-              <label for="p0-NominalWithGrant"><span class="red-text">p0nominal:</span></label>
+              <label for="p0-NominalWithGrant"><span class="red-text">p0nominal (-202 to 24)：</span></label>
               <input type="number" step="any" id="p0-NominalWithGrant" required value="-80"><br>
             </li>
 
             <li>
-              <label for="p0"><span class="red-text">p0:</span></label>
+              <label for="p0"><span class="red-text">p0 (-16 to 15)：</span></label>
               <input type="number" step="any" id="p0" required value="-10"><br>
             </li>
 
             <li>
-              <label for="mu">μ:</label>
+              <label for="mu">μ (SCS configuration)：</label>
               <input type="number" step="any" id="mu" required value="1"><br>
             </li>
 
             <li>
-              <label for="num-RB"><span class="LimeGreen-text">Num RB:</span></label>
+              <label for="num-RB"><span class="LimeGreen-text">Num RB (PUSCH Data)：</span></label>
               <input type="number" id="num-RB" required value="273"><br>
             </li>
 
             <li>
-              <label for="alpha"><span class="SeaGreen-text">alpha (can be 0, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9,
-                  1):</span></label>
+              <label for="alpha"><span class="SeaGreen-text">alpha (can be 0, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)：</span></label>
               <input type="number" step="any" id="alpha" required value="1"><br>
             </li>
 
             <li>
-              <label for="pathloss"><span class="blue-text">Pathloss( = nSsbPwr - RSRP):</span></label>
+              <label for="pathloss"><span class="blue-text">Pathloss (=nSsbPwr - RSRP)：</span></label>
               <input type="number" step="any" id="pathloss" required value="44"><br>
             </li>
 
             <li>
-              <label for="delta-TF"><span class="purple-text">Delta TF:</span></label>
+              <label for="delta-TF"><span class="purple-text">Delta TF(if more than one layer Delta_TF=0)：</span></label>
               <input type="number" step="any" id="delta-TF" required value="3"><br>
             </li>
 
             <li>
-              <label for="tpc-adjustment"><span class="fuchsia-text">TPC Adjustment (need to enable featureSetBitMap "RGR_PUSCH_CLOSE_LOOP_PWR_CNTRL_ENABLE" ):</span></label>
+              <label for="tpc-adjustment"><span class="fuchsia-text">TPC Adjustment (need to enable featureSetBitMap "RGR_PUSCH_CLOSE_LOOP_PWR_CNTRL_ENABLE" )：</span></label>
               <input type="number" step="any" id="tpc-adjustment" required value="37"><br>
             </li>
             <button type="button" onclick="calculatePower()">Calculate</button>
