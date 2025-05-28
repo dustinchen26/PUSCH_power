@@ -89,7 +89,7 @@
           <ul>
             <li>
               <label for="p0-NominalWithGrant"><span class="red-text">p0nominal (-202 to 24)：</span></label>
-              <input type="number" step="any" id="p0-NominalWithGrant" required value="-80"><br>
+              <input type="number" step="any" id="p0-NominalWithGrant" required value="-74"><br>
             </li>
 
             <li>
@@ -104,7 +104,7 @@
 
             <li>
               <label for="num-RB"><span class="LimeGreen-text">Num RB (PUSCH Data)：</span></label>
-              <input type="number" id="num-RB" required value="273"><br>
+              <input type="number" id="num-RB" required value="24"><br>
             </li>
 
             <li>
@@ -114,17 +114,17 @@
 
             <li>
               <label for="pathloss"><span class="blue-text">Pathloss (=nSsbPwr - RSRP)：</span></label>
-              <input type="number" step="any" id="pathloss" required value="44"><br>
+              <input type="number" step="any" id="pathloss" required value="63"><br>
             </li>
 
             <li>
               <label for="delta-TF"><span class="purple-text">Delta TF(if more than one layer Delta_TF=0)：</span></label>
-              <input type="number" step="any" id="delta-TF" required value="3"><br>
+              <input type="number" step="any" id="delta-TF" required value="-1"><br>
             </li>
 
             <li>
               <label for="tpc-adjustment"><span class="fuchsia-text">TPC Adjustment (need to enable featureSetBitMap "RGR_PUSCH_CLOSE_LOOP_PWR_CNTRL_ENABLE" )：</span></label>
-              <input type="number" step="any" id="tpc-adjustment" required value="37"><br>
+              <input type="number" step="any" id="tpc-adjustment" required value="0"><br>
             </li>
             <button type="button" onclick="calculatePower()">Calculate</button>
             <pre id="calculation-result">
@@ -161,124 +161,63 @@
     </script>
 	
 <pre>
-=========================================================================================================================
-<strong>Example:</strong>
-PUSCH_Transmit_Power
-=  P_PUSCH
-=  min{ P_CMAX , P_O_PUSCH                          + 10*log(2^μ * M_PUSCH_RB)+ α * PL + ΔTF + f }
-=  min{ MTPL   , P_O_NOMINAL_PUSCH   + P_O_UE_PUSCH + 10*log(2^μ * M_PUSCH_RB)+ α * PL + ΔTF + f }
-=  min{ MTPL   , p0-NominalWithGrant + p0           + 10*log(2^μ * NumRB) + alpha * Pathloss + Delta_TF + TPC_Adjustment }
-=  p0-NominalWithGrant + p0   + 10 * log(2^μ* NumRB ) + alpha * Pathloss + Delta_TF + TPC_Adjustment
-=   -70               + (-10) + 10 * log10(2^1 * 16)  +  1   *   32      +   2     +   0
-= -30.95 dBm
+=====================================================================================
+//log-20240516-101712_teak_n78_cpe_camp● 05-16.10-18-25-680.hdf
 
-<strong>// DU xml</strong>
-        <span class="blue-text">&lt;nSsbPwr&gt;-15&lt;/nSsbPwr&gt;....(Pathloss = nSsbPwr - RSRP) </span>
-        &lt;puschPwrCfg&gt;
-            &lt;msg3deltaPreamble&gt;0&lt;/msg3deltaPreamble&gt;
-            <span class="red-text">&lt;p0nominal&gt;-70&lt;/p0nominal&gt;</span>
-            &lt;msg3alpha&gt;ALL&lt;/msg3alpha&gt;
-            <span class="red-text">&lt;p0&gt;-10&lt;/p0&gt;</span>
-            <span class="SeaGreen-text">&lt;alpha&gt;ALL&lt;/alpha&gt;....(can be A0, A4, A5, A6, A7, A8, A9, ALL)</span>
-            &lt;deltaMcsEnabled&gt;true&lt;/deltaMcsEnabled&gt;
-            <span class="fuchsia-text">&lt;isAccumulated&gt;true&lt;/isAccumulated&gt;...(can be true, false)</span>
-        &lt;/puschPwrCfg&gt;
-
-        <span class="fuchsia-text">&lt;featureSetBitMap&gt;27&lt;/featureSetBitMap&gt;...(TPC Adjustment need to enable featureSetBitMap "RGR_PUSCH_CLOSE_LOOP_PWR_CNTRL_ENABLE")</span>
-
-            &lt;ulTargetCqi&gt;
-                <span class="fuchsia-text">&lt;targetCqi&gt;7&lt;/targetCqi&gt;...(can be 1 to 15)</span>
-
-<strong>// DU sys_config.txt</strong>
-<span class="fuchsia-text"># nSNR = nSNR + nSNR_add 
-NSNR_ADD   = 9 ... (uint8_t nSNR_add, can be 0 to 255. default NSNR_ADD = 9) </span>
-		
-<strong>// To enable feature "TPC Adjustment", you can turn on featureSetBitMap = 1+2+8+16 = 27</strong>
-    typedef enum rgrFeatureSetBitMap
-    {
-       RGR_ALL_FEATURE_DISABLE =0, /*!< No Feature is enabled*/
-       <span class="fuchsia-text">RGR_DL_LA_ENABLE        =1, /*!< DL LA is enabled*/</span>
-       <span class="fuchsia-text">RGR_UL_LA_ENABLE        =2, /*!< UL LA is enabled*/</span>
-       RGR_TA_ENABLE           =4, /*!< TA is enabled*/
-       RGR_PUCCH_PWR_CNTRL_ENABLE = 8, /*!< PUCCH Power Control is enabled*/
-       <span class="fuchsia-text">RGR_PUSCH_CLOSE_LOOP_PWR_CNTRL_ENABLE = 16, /*!< PUSCH CLose loop power control is enabled */</span>
-       RGR_PUSCH_PWR_CNTRL_ENABLE = 32, /*!< PUSCH Power Control is enabled*/
-       RGR_DL_LA_HARQ_BASED_ENABLE = 64, /*!< HARQ BASED LA is enabled*/
-    }RgrFeatureSetBitMap;
-
-<strong>// UE QXDM_log </strong>
-07:59:43.496	[0xB821]	BCCH_DL_SCH / SystemInformationBlockType1
-          uplinkConfigCommon 
-          {
-            frequencyInfoUL 
-            {
-              scs-SpecificCarrierList 
-              {
-                {
-                  subcarrierSpacing kHz30, //μ=1
-                }
-              },
-              p-Max 33
-            },
-            initialUplinkBWP 
-            {
-              genericParameters 
-              {
-                subcarrierSpacing kHz30 //μ=1
-              },
+2024/04/13 01:37:32.820	[0xB821]	BCCH_DL_SCH / SystemInformationBlockType1
               pusch-ConfigCommon setup : 
                 {
-                  <span class="red-text">p0-NominalWithGrant -70 </span>
+                  p0-NominalWithGrant -74 ●
                 },
-          <span class="blue-text">ss-PBCH-BlockPower -15 // Pathloss = ss-PBCH-BlockPower - RSRP = (-15) - (-46.28) = 31.28 near 32 </span>
-        },
 
-<span class="blue-text">// RSRP = -46.28</span>
-07:59:43.614	[0xB97F]	NR5G ML1 Searcher Measurement Database Update Ext
-      -----------------------------------------------------------------------------------------------------------------------------------------
-      |   |      |      |     |            |            |Detected Beams                                                                       |
-      |   |      |      |     |            |            |   |     |RX Beam Info           |NR2NR       |NR2NR       |L2NR        |L2NR        |
-      |   |      |PBCH  |Num  |Cell Quality|Cell Quality|   |SSB  |RX Beam|               |Filtered Tx |Filtered Tx |Filtered Tx |Filtered Tx |
-      |#  |PCI   |SFN   |Beams|RSRP        |RSRQ        |#  |Index|Id     |RSRP           |Beam RSRP L3|Beam RSRQ L3|Beam RSRP L3|Beam RSRQ L3|
-      -----------------------------------------------------------------------------------------------------------------------------------------
-      |  0|     1|   804|    1|     <span class="blue-text">-46.281</span>|     -10.359|  0|    0|     NA|        -46.266|     -46.281|     -10.359|          NA|          NA|
-      |   |      |      |     |            |            |   |     |     NA|        -48.594|            |            |            |            |
+2024/04/13 01:37:32.964	[0xB821]	DL_CCCH / RRC Setup
+                                  p0 -10, ●
+                                  alpha alpha1 ●
 
-07:59:43.640    [0xB821]    DL_CCCH / RRC Setup
-                              p0-AlphaSets 
-                              {
-                                {
-                                  p0-PUSCH-AlphaSetId 0,
-                                  <span class="red-text">p0 -10, //p0=-10</span>
-                                  <span class="SeaGreen-text">alpha alpha1 //alpha=1</span>
-                                }
-
-// (808,19) PUSCH <span class="LimeGreen-text">Num RB=16</span>
-07:59:43.665    [0xB883]    NR5G MAC UL Physical Channel Schedule Report
-   ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-   |   |                     |       |Carriers                                                                      
-   |   |                     |       |       |              |                                   |      |                                                                            
-   |   |                     |       |       |              |                                   |      |PUSCH Data                                                                  
-   |   |                     |       |       |              |                                   |      |            |      |       |    |    |                |    |       |       |
-   |   |                     |       |       |              |                                   |Dual  |            |      |       |    |    |                |DMRS|       |       |
-   |   |System Time          |Num    |Carrier|              |                                   |Pol   |Is Second   |Start |Num    |HARQ|    |                |Add |RB     |       |
-   |#  |Slot|Numerology|Frame|Carrier|ID     |RNTI Type     |Phychan Bit Mask                   |Status|Phychan     |Symbol|Symbols|ID  |MCS |MCS Table       |Pos |Start  |Num RBs|
-   ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-   |  0|  19|     30kHz|  808|      1|      0|        C_RNTI|                              PUSCH|     0|           0|     0|     12|   0|   9|           64QAM|   1|      0|     <span class="LimeGreen-text">16</span>|
-
-// (808,19) PUSCH <span class="blue-text">Pathloss=32</span>, <span class="purple-text">Delta TF=2</span>, <span class="fuchsia-text">TPC Adjustment=0</span>, PUSCH Transmit Power = -30
-07:59:43.693    [0xB8D2]    NR5G LL1 FW MAC TX IU Power
-         System Frame Number       = 808
-         SCS                       = 1
-         Slot Number               = 19
-      Power Info
-         --------------------------------------------------------------------------
-         |   |       |       |CarrierIdType                                        
-         |   |       |       |PUSCH Data                                          |
-         |   |Carrier|Channel|Transmit|        |TPC       |PHR |Delta|Is  |Minimum|
-         |#  |Id     |Type   |Power   |Pathloss|Adjustment|MTPL|TF   |Msg3|Power  |
-         --------------------------------------------------------------------------
-         |  0|      0|  PUSCH|     -30|      <span class="blue-text">32</span>|         <span class="fuchsia-text">0</span>|  21|    <span class="purple-text">2</span>|   0|    -38|
+//(685,9)
+01:37:32.995767	[0xB883]	NR5G MAC UL Physical Channel Schedule Report
+      System Time {
+         Slot = 9
+         Numerology = 30kHz ●
+         Frame = 685
+      }
+            Num RBs =      24 ●
+		 
+//(685,9)	
+// PUSCH_Tx_Power = Pcmax - PHR = 20-24 = -4 dBm 接近 -5 驗證成立！
+01:37:33.020	[0xB8D2]	NR5G LL1 FW MAC TX IU Power
+         Log Header {
+            System Frame Number = 685
+            Slot Number = 9
+         }
+         Power Info[0] {
+            Carrier Id = 0
+            Channel Type = PUSCH ●
+            PUSCH Data {
+               Transmit Power = -5 ●
+               Pathloss = 63 ●
+               TPC Adjustment = 0 ●
+               PHR MTPL = 20 ●
+               Delta TF = -1 ●
+               Is Msg3 = 0
+               Minimum Power = -38
+            }
+//(685,9)	
+2024/04/13 01:37:33.147	[0xB872]	NR5G L2 UL TB
+   TTI Info[0] {
+      TTI Info Meta {
+         Sys Time {
+            Slot Number =     9
+            FN =    685
+         }
+            McePayload[1] {
+               MCE Type =    S-PHR
+               SinglePhr {
+                  PH = 56       	●24 dB <= PH < 26 dB (56)
+                  Pcmax fc = 50 	●Pcmax,c,f: 20 dBm <= Pcmax,f,c < 21 dBm (50)
+                  R = 0
+               }
+=====================================================================================
 </pre>
 
 </body>
