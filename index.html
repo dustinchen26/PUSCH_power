@@ -173,7 +173,7 @@
 2024/04/13 01:37:32.964	[0xB821]	DL_CCCH / RRC Setup
                                   p0 -10, ●
                                   alpha alpha1 ●
-
+								  
 //(685,9)
 01:37:32.995767	[0xB883]	NR5G MAC UL Physical Channel Schedule Report
       System Time {
@@ -184,7 +184,7 @@
             Num RBs =      24 ●
 		 
 //(685,9)	
-// PUSCH_Tx_Power = Pcmax - PHR = 20-24 = -4 dBm 接近 -5 驗證成立！
+// ●PUSCH_Tx_Power = Pcmax - PHR = 20-24 = -4 dBm 接近 -5 驗證成立！
 01:37:33.020	[0xB8D2]	NR5G LL1 FW MAC TX IU Power
          Log Header {
             System Frame Number = 685
@@ -202,6 +202,7 @@
                Is Msg3 = 0
                Minimum Power = -38
             }
+			
 //(685,9)	
 2024/04/13 01:37:33.147	[0xB872]	NR5G L2 UL TB
    TTI Info[0] {
@@ -217,6 +218,18 @@
                   Pcmax fc = 50 	●Pcmax,c,f: 20 dBm <= Pcmax,f,c < 21 dBm (50)
                   R = 0
                }
+=====================================================================================
+// (wireshark bbuiolog.pcap) keyword: mac-nr.ulsch.lcid == 0x39 || mac-nr.control.se-phr.ph || mac-nr.control.se-phr.pcmax_f_c
+No.	Protocol	Info	SFN	SF	Slot Index
+105236	PDCP-NR	UEId=17017  [UL] [AM] SRB:1  [DATA] (P) SN=0               [33-bytes]  (Short BSR LCG ID=0 BS=0)   (PHR PH=56 PCMAX_f_c=50)   (Padding 226 bytes) 	685	4	1
+
+Subheader: (PHR PH=56 PCMAX_f_c=50) 
+    00.. .... = Reserved: 0x00
+    ..11 1001 = LCID: Single Entry PHR (0x39)
+    00.. .... = Reserved: 0x0
+    ..11 1000 = Power Headroom: 24 dB <= PH < 26 dB (56)     ●PH = 56
+    00.. .... = Reserved: 0x0
+    ..11 0010 = Pcmax,c,f: 20 dBm <= Pcmax,f,c < 21 dBm (50)  ●Pcmax fc = 50
 =====================================================================================
 </pre>
 
